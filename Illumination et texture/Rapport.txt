@@ -1,0 +1,35 @@
+Q1: On peut utiliser une atténuation en fonction de la distance, comme prévu
+    dans le modèle d'illumination, afin de produire l'image de droite
+    affichée dans la figure 14. Dites comment vous implanteriez cette
+    atténuation dans les nuanceurs. Quels sont les énoncés que vous
+    ajouteriez ou modifierez ? À quel endroit et dans quel(s) nuanceur(s) ?
+    Votre méthode devrait s'appliquer autant pour l'illumination avec
+    Gouraud ou avec Phong.
+
+    Nous utiliserions l'approche suivante :
+    https://learnwebgl.brown37.net/09_lights/lights_attenuation.html
+
+    L'attenuation serait alors calculée dans le nuanceur de fragments puisque
+    celui-ci prend directement la couleur du nuanceur de sommets avec ou sans
+    l'illumination de Gouraud. La formule employée serait
+    
+    MAX_ILLUMINATION_DIST / d
+
+    où d serait norme du vecteur représentant la distance entre la source
+    lumineuse et le fragment, et MAX_ILLUMINATION_DIST la distance minimale où
+    l'illumination serait totale. Ce facteur d'atténuation serait multiplié en
+    dernier à la somme des des couleurs.
+
+
+
+Q2: Vous avez probablement remarqué que même en demandant un très grand
+    niveau de tessellation, le générateur de tessellation ne produira pas
+    une tessellation plus fine que le niveau maximum donné par la constante
+    GL_MAX_TESS_GEN_LEVEL.  (On peut obtenir la valeur de cette constante
+    avec glGet() et elle doit être au moins 64.)
+    Que doit-on alors faire si on veut, malgré tout, une tessellation deux
+    fois plus fine dans chaque direction?
+
+    Appliquer une première sous-division aux points de l'objet et l'enregistrer
+    comme une nouvelle forme à laquelle on pourra alors appliquer le niveau
+    maximal de tessellation.

@@ -1,0 +1,33 @@
+Q1: Lorsque l'on construit notre robot dans la partie 1 du TP, on effectue plusieurs transformations OpenGL sur chaque partie de l'oiseau.
+    Ici on voudrait déplacer un objet quelconque sur un point arbitraire, faire un changement d'échelle puis une rotation et un enfin
+    un dernier déplacement. Écrivez la série de commandes OpenGL pour arriver à ces résultats en affichant l'objet (pas besoin d'arguments dans les fonctions) et
+    surtout l'ordre des commandes que vous auriez donné dans le code pour arriver à ce résultat en justifiant pourquoi (vous pouvez détailler
+    le calcul mathématique matriciel pour vous aider à justifier).
+
+    glm::vec3 pointArbitraire = {1, 1, 1};      // point arbitraire sur lequel le premier déplacement sera éffectué
+    GLfloat taille = 2.0;                       // valeur utilisée pour la mise à l'echelle
+    GLfloat angleRotation = 30.0;               // angle duquel la rotation sera éffectuée
+    glm::vec3 dernierDeplacement = {2, 2, 2};   // point arbitraire sur lequel le dernier déplacement sera éffectué
+    
+    matrModel.PushMatrix();                                                                     // sauvegarde de l'état courant de la matrice
+    {
+        matrModel.Translate(pointArbitraire.x, pointArbitraire.y, pointArbitraire.z);           // déplacement de l'objet sur un point arbitraire
+        matrModel.Scale(taille, taille, taille);                                                // changement d'échelle (la taille va doubler)
+        matrhModel.Rotate(angleRotation, 0, 0, 1);                                              // rotation de 30° autour de l'axe Z
+        matrModel.Translate(dernierDeplacement.x, dernierDeplacement.y, dernierDeplacement.z);  // déplacement de l'objet sur un point arbitraire
+        glUniformMatrix4fv(locmatrModel, 1, GL_FALSE, matrModel);                               // informer la carte graphique des changement éffectué
+        afficherObjet();                                                                        // afficher l'objet
+    }
+    matrModel.PopMatrix();                                                                      // rétablissement de l'ancien état de la matrice après modifications
+    glUniformMatrix4fv( locmatrModel, 1, GL_FALSE, matrModel );                                 // informer la carte graphique des changement éffectué
+
+    Puisque la liste de transformations sur l'objet est séquentielle, les matrices de transformation doivent être concaténées dans l'ordre
+    donné afin de ne pas devoir leur appliquer d'ajustements supplémentaires.
+
+Q2: Dans ce TP dans la partie 2, on vous a demandé d'utiliser des VBOs pour afficher la fameuse théière!
+    Visuellement rien ne change, mais quelles sont les différences entre les deux méthodes utilisées ?
+    Pourquoi d'ailleurs ne remarque-t-on aucune différence ?
+
+    En utilisant la méthode initiale, des sommets sont transmis par bloc de 3 du CPU au GPU à chaque itération de la boucle. Beaucoup de transferts de
+    données sont effectués. En employant un VBO, un seul transfert est effectué. Les mêmes données sont transmises donc le résultat graphique reste le même, mais
+    cette deuxième méthode est plus efficace que la première.
